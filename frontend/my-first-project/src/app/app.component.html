@@ -1,0 +1,160 @@
+<div class="container-xl" id="main-container">
+	<div class="table-responsive">
+		<div class="table-wrapper">
+			<div class="table-title">
+				<div class="row">
+					<div class="col-sm-6">
+						<h2>Manage <b>Employees</b></h2>
+					</div>
+					<div class="col-sm-6">
+						<a (click)="onOpenModal(null,'add')" class="btn btn-success" data-toggle="modal"><i class="material-icons">&#xE147;</i> <span>Add New Employee</span></a>
+					</div>
+				</div>
+        <br><br>
+        <form class="form-inline my-2 my-lg-0">
+          <input type="search" (ngModelChange)="searchEmployee(key.value)" #key="ngModel" ngModel
+           name="key" id="searchName" class="form-control mr-sm-2" placeholder="search employee ..." required>
+        </form>
+			</div>
+			<table class="table table-striped table-hover">
+				<thead>
+					<tr>
+						<th>Name</th>
+						<th>Email</th>
+						<th>jobTitle</th>
+						<th>employeeCode</th>
+            <th>Phone</th>
+
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr *ngFor="let employee of employees">
+						<td> {{employee.name}}</td>
+						<td> {{employee.email}}</td>
+						<td> {{employee.jobTitle}}</td>
+						<td> {{employee.employeeCode}}</td>
+            <td> {{employee.phoneNumber}}</td>
+            <td style="white-space: nowrap; ">
+              <div style="display: inline-block;">
+                <a (click)="onOpenModal(employee,'update')" class="edit btn" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Edit">&#xE254;</i></a>
+                <a (click)="onOpenModal(employee,'delete')" class="delete btn" data-toggle="modal"><i class="material-icons" data-toggle="tooltip" title="Delete">&#xE872;</i></a>
+              </div>
+            </td>
+					</tr>
+				</tbody>
+			</table>
+			<!--<div class="clearfix">
+				<div class="hint-text">Showing <b>5</b> out of <b>25</b> entries</div>
+				<ul class="pagination">
+					<li class="page-item disabled"><a href="#">Previous</a></li>
+					<li class="page-item"><a href="#" class="page-link">1</a></li>
+					<li class="page-item"><a href="#" class="page-link">2</a></li>
+					<li class="page-item active"><a href="#" class="page-link">3</a></li>
+					<li class="page-item"><a href="#" class="page-link">4</a></li>
+					<li class="page-item"><a href="#" class="page-link">5</a></li>
+					<li class="page-item"><a href="#" class="page-link">Next</a></li>
+				</ul>
+			</div>-->
+		</div>
+	</div>
+</div>
+<!-- Add Modal HTML -->
+<div id="addEmployeeModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<form #addForm="ngForm" (ngSubmit)="onAddEmployee(addForm)">
+
+        <div class="modal-header">
+					<h4 class="modal-title">Add Employee</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label>Name</label>
+						<input type="text" class="form-control" required ngModel name="name">
+					</div>
+					<div class="form-group">
+						<label>Email</label>
+						<input type="email" class="form-control" required ngModel name="email">
+					</div>
+					<div class="form-group">
+						<label>Job Title</label>
+						<input class="form-control" required ngModel name="jobTitle">
+					</div>
+          <div class="form-group">
+						<label>Phone</label>
+						<input type="text" class="form-control" required  ngModel name="phoneNumber">
+					</div>
+				</div>
+				<div class="modal-footer">
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+					<input [disabled]="addForm.invalid" type="submit" class="btn btn-success" value="Add" data-bs-dismiss="modal">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<!-- Edit Modal HTML -->
+<div id="editEmployeeModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+
+			<form #editForm="ngForm" >
+
+        <input type="text" class="form-control" required  ngModel="{{employee?.employeeCode}}" hidden name="employeeCode">
+        <input type="text" class="form-control" required ngModel="{{employee?.id}}" hidden name="id">
+
+        <div class="modal-header">
+					<h4 class="modal-title">Edit Employee</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+        <div class="modal-body">
+          <div class="form-group">
+						<label>Name</label>
+						<input type="text" class="form-control" required ngModel="{{employee?.name}}" name="name">
+					</div>
+					<div class="form-group">
+						<label>Email</label>
+						<input type="email" class="form-control" required ngModel="{{employee?.email}}" name="email">
+					</div>
+					<div class="form-group">
+						<label>Job Title</label>
+						<input class="form-control" required ngModel="{{employee?.jobTitle}}" name="jobTitle">
+					</div>
+          <div class="form-group">
+						<label>Phone</label>
+						<input type="text" class="form-control" required ngModel="{{employee?.phoneNumber}}" name="phoneNumber">
+					</div>
+				</div>
+				<div class="modal-footer">
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+					<button (click)="onUpdateEmployee(employee!.id, editForm.value)" class="btn btn-info" data-bs-dismiss="modal">Save</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+<!-- Delete Modal HTML -->
+<div id="deleteEmployeeModal" class="modal fade">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<form>
+        <input type="text" class="form-control" required ngModel="{{employee?.id}}"  name="id">
+				<div class="modal-header">
+					<h4 class="modal-title">Delete Employee</h4>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<p>Are you sure you want to delete {{employeeName}} Records?</p>
+					<p class="text-warning"><small>This action cannot be undone.</small></p>
+				</div>
+				<div class="modal-footer">
+          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancel</button>
+					<input (click)="onDeleteEmployee(employee!.id)"  type="submit" class="btn btn-danger" value="Delete" data-bs-dismiss="modal">
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
